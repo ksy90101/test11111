@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>방문자 카운터</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .card {
+      background: #ffffff;
+      padding: 40px 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      text-align: center;
+      max-width: 400px;
+      width: 100%;
+    }
+    h1 {
+      font-size: 1.6rem;
+      color: #333;
+      margin-bottom: 24px;
+    }
+    .counter-display {
+      font-size: 4.5rem;
+      font-weight: 800;
+      color: #4f46e5;
+      margin: 20px 0;
+      transition: transform 0.15s ease;
+    }
+    .counter-display.pop {
+      transform: scale(1.15);
+    }
+    .btn {
+      background-color: #4f46e5;
+      color: #ffffff;
+      border: none;
+      padding: 16px 32px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border-radius: 12px;
+      cursor: pointer;
+      width: 100%;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+      transition: background-color 0.2s, transform 0.1s;
+    }
+    .btn:hover {
+      background-color: #4338ca;
+    }
+    .btn:active {
+      transform: scale(0.98);
+    }
+    .info {
+      margin-top: 20px;
+      font-size: 0.875rem;
+      color: #6b7280;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>👋 방문자 카운터</h1>
+    <div id="countDisplay" class="counter-display">0</div>
+    <button id="countBtn" class="btn">방문하기 (+1)</button>
+    <p class="info">버튼을 누르면 GET /api/count 가 호출되어 카운트가 1 증가합니다.</p>
+  </div>
+
+  <script>
+    const countDisplay = document.getElementById('countDisplay');
+    const countBtn = document.getElementById('countBtn');
+
+    function animateCount() {
+      countDisplay.classList.add('pop');
+      setTimeout(() => countDisplay.classList.remove('pop'), 150);
+    }
+
+    // 현재 카운트 조회
+    async function fetchCurrentCount() {
+      try {
+        const res = await fetch('/api/count/current');
+        const data = await res.json();
+        countDisplay.textContent = data.count;
+      } catch (err) {
+        console.error('카운트를 불러오지 못했습니다:', err);
+      }
+    }
+
+    // 카운트 1 증가 (GET /api/count)
+    async function incrementCount() {
+      try {
+        const res = await fetch('/api/count');
+        const data = await res.json();
+        countDisplay.textContent = data.count;
+        animateCount();
+      } catch (err) {
+        console.error('카운트를 증가시키지 못했습니다:', err);
+      }
+    }
+
+    countBtn.addEventListener('click', incrementCount);
+    fetchCurrentCount();
+  </script>
+</body>
+</html>
